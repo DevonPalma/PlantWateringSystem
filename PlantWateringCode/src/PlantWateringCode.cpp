@@ -1,3 +1,9 @@
+/******************************************************/
+//       THIS IS A GENERATED FILE - DO NOT EDIT       //
+/******************************************************/
+
+#include "Particle.h"
+#line 1 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/PlantWateringCode/src/PlantWateringCode.ino"
 /*
  * Project PlantWateringCode
  * Description: Control a smart plant watering device
@@ -5,6 +11,9 @@
  * Date: 3/21/2022
  */
 
+void setup();
+void loop();
+#line 8 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/PlantWateringCode/src/PlantWateringCode.ino"
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
 const int MOTOR_PIN = A1;
