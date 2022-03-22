@@ -3,7 +3,7 @@
 /******************************************************/
 
 #include "Particle.h"
-#line 1 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/DustSensorTest/src/DustSensorTest.ino"
+#line 1 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/CodeTest/DustSensorTest/src/DustSensorTest.ino"
 /*
  * Project DustSensorTest
  * Description:
@@ -15,7 +15,7 @@
 
 void setup();
 void loop();
-#line 10 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/DustSensorTest/src/DustSensorTest.ino"
+#line 10 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/CodeTest/DustSensorTest/src/DustSensorTest.ino"
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
 const int DUST_SENSOR_PIN = A5;

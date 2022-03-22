@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "PlantWateringCode"
+		},
+		{
+			"path": "CodeTest\\AirQualityTest"
+		},
+		{
+			"path": "CodeTest\\DustSensorTest"
+		},
+		{
+			"path": "CodeTest\\MotionSensor"
+		},
+		{
+			"path": "CodeTest\\MotorTester"
+		},
+		{
+			"path": "CodeTest\\SpeakerTestCode"
+		},
+		{
+			"path": "..\\l14_soilmoisture-DevonPalma\\L14_02_Moisture"
+		},
+		{
+			"path": "..\\l14_soilmoisture-DevonPalma\\L14_03_SubscribePublish"
+		}
+	],
+	"settings": {
+		"extensions.ignoreRecommendations": true,
+		"cortex-debug.openocdPath": "${command:particle.getDebuggerOpenocdPath}",
+		"files.associations": {
+			"*.ino": "cpp"
+		}
+	}
+}
