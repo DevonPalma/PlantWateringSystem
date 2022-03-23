@@ -11,18 +11,18 @@
  * Date: 3/21/2022
  */
 
-void setup();
-void loop();
-bool physicalButtonPressed();
-void waterPlant();
-#line 8 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/PlantWateringCode/src/PlantWateringCode.ino"
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// SYSTEM_MODE(SEMI_AUTOMATIC);
 
 #include "CloudConnect.h"
 #include "EnvData.h"
 #include "OLEDDisplay.h"
 #include <DTimer.h>
 
+void setup();
+void loop();
+bool physicalButtonPressed();
+void waterPlant();
+#line 15 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/PlantWateringCode/src/PlantWateringCode.ino"
 const int RELAY_PIN = A1;
 const int DUST_SENSOR_PIN = A0;
 const int AIR_QUALITY_PIN = A2;
