@@ -18,11 +18,10 @@ void waterPlant();
 #line 8 "c:/Users/deedp/Documents/IOT/PlantWateringSystem/PlantWateringCode/src/PlantWateringCode.ino"
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-#include <DTimer.h>
+#include "CloudConnect.h"
 #include "EnvData.h"
 #include "OLEDDisplay.h"
-#include "CloudConnect.h"
-
+#include <DTimer.h>
 
 const int RELAY_PIN = A1;
 const int DUST_SENSOR_PIN = A0;
@@ -31,6 +30,7 @@ const int SOIL_PIN = A3;
 const int OLED_ADDRESS = 0x3C;
 const int BUTTON_PIN = D2;
 
+CloudConnect cloudConnect;
 
 void setup() {
     Serial.begin();
@@ -38,7 +38,6 @@ void setup() {
     pinMode(RELAY_PIN, OUTPUT);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
 
-    
     // Connect to WiFi without going to Particle Cloud
     Serial.printf("Connecting to WiFi\n");
     WiFi.connect();
@@ -55,28 +54,24 @@ void setup() {
 void loop() {
     static OLED_Wrapper display;
     static SuperCollector collector(DUST_SENSOR_PIN, AIR_QUALITY_PIN, SOIL_PIN);
-    static CloudConnect cloudConnect;
-    static DTimer t_30Sec(30*1000);
-    static DTimer t_2Min(2*60*1000);
-    static DTimer t_10Min(10*60*1000);
+    static DTimer t_30Sec(30 * 1000);
+    static DTimer t_2Min(2 * 60 * 1000);
+    static DTimer t_10Min(10 * 60 * 1000);
 
     static EnvData newDataSet;
-
 
     if (t_30Sec.isDone()) {
         t_30Sec.start();
         collector.collect(&newDataSet);
         display.print(&newDataSet);
-        Serial.printf("Time till publish: %.2f\n", t_2Min.timeLeft()/1000.0);
-        Serial.printf("Time till Water: %.2f\n", t_10Min.timeLeft()/1000.0);
+        Serial.printf("Time till publish: %.2f\n", t_2Min.timeLeft() / 1000.0);
+        Serial.printf("Time till Water: %.2f\n", t_10Min.timeLeft() / 1000.0);
     }
-
 
     if (t_2Min.isDone()) {
         t_2Min.start();
         cloudConnect.publish(&newDataSet);
     }
-
 
     if (t_10Min.isDone()) {
         t_10Min.start();
@@ -108,4 +103,5 @@ void waterPlant() {
     digitalWrite(RELAY_PIN, HIGH);
     delay(500);
     digitalWrite(RELAY_PIN, LOW);
+    cloudConnect.sendWaterStamp();
 }

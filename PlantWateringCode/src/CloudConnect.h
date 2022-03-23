@@ -2,6 +2,7 @@
 #define _CLOUD_CONNECT_H_
 
 #include "credentials.h"
+#include "EnvData.h"
 #include <Adafruit_MQTT.h>
 #include <Adafruit_MQTT/Adafruit_MQTT.h>
 #include <Adafruit_MQTT/Adafruit_MQTT_SPARK.h>
@@ -52,7 +53,7 @@ public:
     }
 
     void sendWaterStamp() {
-        static Adafruit_MQTT_Publish waterStamp(&mqtt, AIO_USERNAME, "/feeds/waterStamp");
+        static Adafruit_MQTT_Publish waterStamp(&mqtt, AIO_USERNAME "/feeds/waterStamp");
 
         reconnect();
 
