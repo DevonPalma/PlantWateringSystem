@@ -9,6 +9,8 @@ const int OLED_ADDRESS_1 = 0x3C;
 const int OLED_WIDTH = 128;
 const int OLED_HEIGHT = 64;
 
+
+// In charge of displaying all data to my OLED display.
 class OLED_Wrapper {
 private:
     Adafruit_SSD1306 myDisplay;
