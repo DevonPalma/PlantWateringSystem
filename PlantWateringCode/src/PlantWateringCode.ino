@@ -7,59 +7,90 @@
 
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
-#include <DTimer.h>
+#include "CloudConnect.h"
 #include "EnvData.h"
 #include "OLEDDisplay.h"
-#include <Adafruit_MQTT.h>
-#include <Adafruit_MQTT/Adafruit_MQTT.h>
-#include <Adafruit_MQTT/Adafruit_MQTT_SPARK.h>
-#include "credentials.h"
-
-
+#include <DTimer.h>
 
 const int RELAY_PIN = A1;
 const int DUST_SENSOR_PIN = A0;
 const int AIR_QUALITY_PIN = A2;
 const int SOIL_PIN = A3;
 const int OLED_ADDRESS = 0x3C;
+const int BUTTON_PIN = D2;
+
+CloudConnect cloudConnect;
 
 void setup() {
     Serial.begin();
-    while (!Serial);
-    Serial.printf("Setup serial\n");
     delay(5000);
     pinMode(RELAY_PIN, OUTPUT);
-    digitalWrite(RELAY_PIN, HIGH);
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+    // Connect to WiFi without going to Particle Cloud
+    Serial.printf("Connecting to WiFi\n");
+    WiFi.connect();
+    while (WiFi.connecting()) {
+        DTimer delayer(200);
+        if (delayer.isDone()) {
+            delayer.start();
+            Serial.printf(".");
+        }
+    }
+    Serial.printf("Connected to WiFi!\n");
 }
 
 void loop() {
     static OLED_Wrapper display;
     static SuperCollector collector(DUST_SENSOR_PIN, AIR_QUALITY_PIN, SOIL_PIN);
-    static DTimer t_30Sec(15*1000);
-    static DTimer t_3Min(3*60*1000);
-    static DTimer t_30Min(30*60*1000);
+    static DTimer t_30Sec(30 * 1000);
+    static DTimer t_2Min(2 * 60 * 1000);
+    static DTimer t_10Min(10 * 60 * 1000);
 
-    EnvData newDataSet;
-
+    static EnvData newDataSet;
 
     if (t_30Sec.isDone()) {
         t_30Sec.start();
         collector.collect(&newDataSet);
         display.print(&newDataSet);
+        Serial.printf("Time till publish: %.2f\n", t_2Min.timeLeft() / 1000.0);
+        Serial.printf("Time till Water: %.2f\n", t_10Min.timeLeft() / 1000.0);
     }
 
-
-    if (t_3Min.isDone()) {
-        t_3Min.start();
-        // sendEnvToCloud(&newDataSet);
+    if (t_2Min.isDone()) {
+        t_2Min.start();
+        cloudConnect.publish(&newDataSet);
     }
 
-    if (t_30Min.isDone()) {
-        t_30Min.start();
-        // requestPlantWatering(&newDataSet);
+    if (t_10Min.isDone()) {
+        t_10Min.start();
+        if (newDataSet.soilMoisture > 1700) {
+            waterPlant();
+        }
+    }
+
+    if (physicalButtonPressed() || cloudConnect.buttonPressed()) {
+        waterPlant();
     }
 }
 
-void sendEnvToCloud(EnvData *data) {
-    
+bool physicalButtonPressed() {
+    static bool lastState = digitalRead(BUTTON_PIN);
+
+    bool _lastState = lastState;
+    bool _curState = digitalRead(BUTTON_PIN);
+    lastState = _curState;
+
+    if (_curState && !_lastState) {
+        return true;
+    }
+    return false;
+}
+
+void waterPlant() {
+    Serial.printf("Watering plant\n");
+    digitalWrite(RELAY_PIN, HIGH);
+    delay(500);
+    digitalWrite(RELAY_PIN, LOW);
+    cloudConnect.sendWaterStamp();
 }
