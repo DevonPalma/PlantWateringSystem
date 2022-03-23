@@ -5,7 +5,7 @@
  * Date: 3/21/2022
  */
 
-SYSTEM_MODE(SEMI_AUTOMATIC);
+// SYSTEM_MODE(SEMI_AUTOMATIC);
 
 #include "CloudConnect.h"
 #include "EnvData.h"
