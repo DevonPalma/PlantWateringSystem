@@ -37,20 +37,23 @@ void setup() {
     delay(5000);
     pinMode(RELAY_PIN, OUTPUT);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
-
-    // Connect to WiFi without going to Particle Cloud
-    Serial.printf("Connecting to WiFi\n");
-    WiFi.connect();
-    while (WiFi.connecting()) {
-        DTimer delayer(200);
-        if (delayer.isDone()) {
-            delayer.start();
-            Serial.printf(".");
-        }
-    }
-    Serial.printf("Connected to WiFi!\n");
 }
 
+
+/* Every 30 seconds:
+ * - Read the data
+ * - Push to OLED
+ * 
+ * Every 2 minutes:
+ * - Push last reading to cloud
+ * 
+ * Every 10 minutes:
+ * - Check if plant needs watered, and do so
+ * 
+ * Checks if either the physical or adafruit button
+ *  was pressed, and waters the plant if true.
+ * 
+*/
 void loop() {
     static OLED_Wrapper display;
     static SuperCollector collector(DUST_SENSOR_PIN, AIR_QUALITY_PIN, SOIL_PIN);
@@ -75,7 +78,7 @@ void loop() {
 
     if (t_10Min.isDone()) {
         t_10Min.start();
-        if (newDataSet.soilMoisture > 1700) {
+        if (newDataSet.soilMoisture > 1900) {
             waterPlant();
         }
     }
@@ -85,6 +88,10 @@ void loop() {
     }
 }
 
+
+
+// Check if the physical button was pressed.
+// Only returns true if the button was released
 bool physicalButtonPressed() {
     static bool lastState = digitalRead(BUTTON_PIN);
 
@@ -98,6 +105,9 @@ bool physicalButtonPressed() {
     return false;
 }
 
+
+// Waters the plant by setting relay pin high then back to low after a set time
+// Then pushes to the cloud the water time stamp
 void waterPlant() {
     Serial.printf("Watering plant\n");
     digitalWrite(RELAY_PIN, HIGH);

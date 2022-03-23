@@ -67,7 +67,7 @@ void loop() {
 
     if (t_10Min.isDone()) {
         t_10Min.start();
-        if (newDataSet.soilMoisture > 1700) {
+        if (newDataSet.soilMoisture > 1900) {
             waterPlant();
         }
     }
